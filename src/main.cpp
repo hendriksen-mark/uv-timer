@@ -45,7 +45,6 @@ void setup()
   }
 
   // Hidden menu entry is a startup hold gesture on B1.
-  // With I2C buttons, watch for one long-press event during a short startup window.
   bool enterHiddenMenu = false;
   unsigned long startupCheckBeginMs = millis();
   while (millis() - startupCheckBeginMs < 1600)

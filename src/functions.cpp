@@ -217,6 +217,8 @@ void infoLedIdle()
 	{
 		ChangeNeoPixels_info();
 	}
+	if (strip_info == NULL)
+		return;
 	RgbColor dim_blue = applyBrightness(blue, info_led_brightness * 0.3);
 	strip_info->SetPixelColor(0, dim_blue);
 	strip_info->Show();
@@ -228,6 +230,8 @@ void infoLedBusy()
 	{
 		ChangeNeoPixels_info();
 	}
+	if (strip_info == NULL)
+		return;
 	infoLedPulse(orange, 1, 1000); // Orange pulse
 }
 
@@ -237,6 +241,8 @@ void infoLedSuccess()
 	{
 		ChangeNeoPixels_info();
 	}
+	if (strip_info == NULL)
+		return;
 	infoLedPulse(green, 2, 400); // Two quick green pulses
 }
 
@@ -246,6 +252,8 @@ void infoLedError()
 	{
 		ChangeNeoPixels_info();
 	}
+	if (strip_info == NULL)
+		return;
 	infoLight(red);	  // Set to red first
 	blinkLed(3, 100); // Three fast blinks
 	delay(200);		  // Brief pause before returning to idle

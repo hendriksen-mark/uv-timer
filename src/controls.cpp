@@ -1088,12 +1088,10 @@ void runTestStripMode()
 void runTimerCycle()
 {
   LOG_INFO(F("exposure cycle begin"), timeMin, ':', timeSec, singleDouble ? F("D.S.") : F("S.S."));
-  noInterrupts();
-  countMin = timeMin;
-  countSec = timeSec;
-  msAccumulator = 0;
-  timerGo = true;
-  interrupts();
+  if (!startCountdown(timeMin, timeSec))
+  {
+    return;
+  }
 
   while (true)
   {
