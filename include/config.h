@@ -36,7 +36,6 @@
 // SETTINGS STORAGE (Filesystem + JSON on RP2040)
 // ============================================================================
 #define SETTINGS_FILE "/settings.json"
-#define JSON_DOC_SIZE 512
 
 // ============================================================================
 // BUTTON PIN CONFIGURATION (direct GPIO, active low, internal pull-up)

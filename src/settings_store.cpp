@@ -10,7 +10,7 @@ static bool g_fs_ready = false;
 
 static void emitSettingsJson(const __FlashStringHelper *reason)
 {
-  StaticJsonDocument<JSON_DOC_SIZE> doc;
+  JsonDocument doc;
   doc["singleDouble"] = singleDouble;
   doc["timeMin"] = timeMin;
   doc["timeSec"] = timeSec;
@@ -68,7 +68,7 @@ void factoryResetSettings()
 
 static void loadSettingsFromJson(const char *json_str)
 {
-  StaticJsonDocument<JSON_DOC_SIZE> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, json_str);
 
   if (error)
@@ -138,7 +138,7 @@ void saveSettingsToJson()
 {
   ensureFilesystem();
 
-  StaticJsonDocument<JSON_DOC_SIZE> doc;
+  JsonDocument doc;
   doc["singleDouble"] = singleDouble;
   doc["timeMin"] = timeMin;
   doc["timeSec"] = timeSec;
