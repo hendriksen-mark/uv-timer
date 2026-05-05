@@ -470,12 +470,19 @@ void showHelpScreen()
         lcd.setCursor(0, 1);
         lcd.print("Pause B1/B2/B3x2");
       }
+      else if (page == 3)
+      {
+        lcd.setCursor(0, 0);
+        lcd.print("B1x2:Reboot     ");
+        lcd.setCursor(0, 1);
+        lcd.print("B1Hold:Bootldr  ");
+      }
       else
       {
         lcd.setCursor(0, 0);
-        lcd.print("Boot: Hold B1   ");
+        lcd.print("Boot:HoldB1=Cfg ");
         lcd.setCursor(0, 1);
-        lcd.print("to open cfg menu");
+        lcd.print("B3Hold:HidnMenu ");
       }
       redraw = false;
     }
@@ -488,7 +495,7 @@ void showHelpScreen()
     }
     if (buttonPressed(button2))
     {
-      page = static_cast<uint8_t>((page + 1) % 4);
+      page = static_cast<uint8_t>((page + 1) % 5);
       LOG_DEBUG(F("help page"), page);
       redraw = true;
     }

@@ -49,10 +49,7 @@ void serialWait()
 		infoLedPulse(white, 1, intervalMs); // Pulse white while waiting for serial monitor
 	}
 
-	lcd.setCursor(0, 0);
-	lcd.print("Serial ready    ");
-	lcd.setCursor(0, 1);
-	lcd.print("################");
+	lcd.clear();
 }
 
 void ChangeNeoPixels_info() // this set the number of leds of the strip based on web configuration

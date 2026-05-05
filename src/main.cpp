@@ -11,8 +11,14 @@
 
 void setup()
 {
-  loadSettings();
   Serial.begin(APP_DEBUG_BAUD);
+  LOG_ATTACH_SERIAL(Serial);
+  loadSettings();
+  // Now set log level based on loaded setting
+  LOG_SET_LEVEL(debugLogLevel == 0 ? DebugLogLevel::LVL_INFO : DebugLogLevel::LVL_DEBUG);
+  LOG_DEBUG(F("setup start"));
+  LOG_DEBUG(F("settings loaded"), F("time"), timeMin, ':', timeSec, F("singleDouble"), singleDouble,
+            F("doubleSideEnabled"), doubleSideEnabled, F("whitePwm"), whitePwm);
 
   // Initialize LCD before serial wait so boot status can be shown.
   Wire.setSDA(PIN_LCD_SDA);
@@ -22,13 +28,6 @@ void setup()
   writeBuzzer(false);
 
   serialWait();
-  LOG_ATTACH_SERIAL(Serial);
-
-  lcd.clear();
-
-  // Now set log level based on loaded setting
-  LOG_SET_LEVEL(debugLogLevel == 0 ? DebugLogLevel::LVL_INFO : DebugLogLevel::LVL_DEBUG);
-  LOG_DEBUG(F("setup start"));
 
   initButtons();
 
@@ -36,10 +35,6 @@ void setup()
   pinMode(PIN_UV_MOSFET_2, OUTPUT);
   pinMode(PIN_WHITE_MOSFET, OUTPUT);
 
-  outputsIdle();
-
-  LOG_DEBUG(F("settings loaded"), F("time"), timeMin, ':', timeSec, F("singleDouble"), singleDouble,
-            F("doubleSideEnabled"), doubleSideEnabled, F("whitePwm"), whitePwm);
   outputsIdle();
   setupTimer1();
   serviceButtons();
@@ -85,6 +80,10 @@ void loop()
   serviceButtons();
   drawStartScreen();
 
+
+  // ============================================================================
+  // Button 1 gestures for starting timer, reboot, and bootloader
+  // ============================================================================
   clickType event1 = buttonEvent(button1);
   if (event1 == single_click)
   {
@@ -109,10 +108,17 @@ void loop()
   if (event1 == long_click)
   {
     LOG_WARN(F("bootloader requested via long click"));
+    lcd.setCursor(0, 0);
+    lcd.print("Enter bootloader");
+    lcd.setCursor(0, 1);
+    lcd.print("mode and wait...     ");
     rp2040.rebootToBootloader();
     return;
   }
 
+  // ============================================================================
+  // Button 2 gestures for mode toggle and test strip mode
+  // ============================================================================
   clickType event2 = buttonEvent(button2);
   if (event2 == single_click)
   {
@@ -132,6 +138,9 @@ void loop()
     return;
   }
 
+  // ============================================================================
+  // Button 3 gestures for time edit menu, help screen, and hidden menu
+  // ============================================================================
   clickType event3 = buttonEvent(button3);
   if (event3 == single_click)
   {
