@@ -74,10 +74,8 @@ static void beepStep()
 bool confirmAction(const char *title)
 {
   lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(title);
-  lcd.setCursor(0, 1);
-  lcd.print(F("Yes           No"));
+  lcd.printCenter(title, 0);
+  lcd.printCenter("Yes           No", 1);
 
   while (true)
   {
@@ -197,10 +195,8 @@ static bool startCountdown(uint8_t startMin, uint8_t startSec)
   {
     LOG_WARN(F("countdown refused because time is 00:00"));
     lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Set time first  ");
-    lcd.setCursor(0, 1);
-    lcd.print(" Press Any Key. ");
+    lcd.printCenter("Set time first", 0);
+    lcd.printCenter("Press Any Key.", 1);
     waitForAnyButtonPress();
     lcd.clear();
     return false;
@@ -261,9 +257,8 @@ static bool runStripExposureStep(uint8_t stepIndex, uint8_t stepCount, uint8_t s
       outputsIdle();
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("Strip aborted   ");
-      lcd.setCursor(0, 1);
-      lcd.print(" Press Any Key. ");
+      lcd.printCenter("Strip aborted", 0);
+      lcd.printCenter("Press Any Key.", 1);
       waitForAnyButtonPress();
       lcd.clear();
       return false;
@@ -415,6 +410,27 @@ void outputsIdle()
   writeWhite(true);
 }
 
+void inspectionLight()
+{
+  LOG_DEBUG(F("inspection light on"));
+
+  // Temporarily drive white at full brightness regardless of whitePwm setting.
+  uint8_t savedPwm = whitePwm;
+  whitePwm = 255;
+  writeWhite(true);
+  whitePwm = savedPwm;
+
+  lcd.clear();
+  lcd.printCenter("Inspect mode", 0);
+  lcd.printCenter("Press Any Key.", 1);
+
+  waitForAnyButtonPress();
+
+  writeWhite(true); // restore normal whitePwm brightness
+  lcd.clear();
+  LOG_DEBUG(F("inspection light off"));
+}
+
 void outputsUvOnForMode()
 {
   writeUv1(false);
@@ -452,37 +468,45 @@ void showHelpScreen()
       if (page == 0)
       {
         lcd.setCursor(0, 0);
-        lcd.print("Home: B1 Start ");
+        lcd.print("Boot:Hold B1:Cfg");
         lcd.setCursor(0, 1);
-        lcd.print("B2 Mode B3 SetT");
+        lcd.print("Hold B2:Factory ");
       }
       else if (page == 1)
       {
         lcd.setCursor(0, 0);
-        lcd.print("B2x2 Test Strip");
+        lcd.print("Home: B1:Start ");
         lcd.setCursor(0, 1);
-        lcd.print("B3x2 Help/Exit ");
+        lcd.print("B2:Mode B3:SetT");
       }
       else if (page == 2)
       {
+
         lcd.setCursor(0, 0);
-        lcd.print("Run:Hold B3=Stp ");
+        lcd.print("B1x2:Reboot     ");
         lcd.setCursor(0, 1);
-        lcd.print("Pause B1/B2/B3x2");
+        lcd.print("Hold B1:Bootldr  ");
       }
       else if (page == 3)
       {
         lcd.setCursor(0, 0);
-        lcd.print("B1x2:Reboot     ");
+        lcd.print("B2x2:Test Strip");
         lcd.setCursor(0, 1);
-        lcd.print("B1Hold:Bootldr  ");
+        lcd.print("Hold B2:Inspect ");
+      }
+      else if (page == 4)
+      {
+        lcd.setCursor(0, 0);
+        lcd.print("B3x2:Help/Exit ");
+        lcd.setCursor(0, 1);
+        lcd.print("Hold B3:HidnMenu ");
       }
       else
       {
         lcd.setCursor(0, 0);
-        lcd.print("Boot:HoldB1=Cfg ");
+        lcd.print("Run:Hold B3:Stop");
         lcd.setCursor(0, 1);
-        lcd.print("B3Hold:HidnMenu ");
+        lcd.print("Stopped:B3x2:Ext");
       }
       redraw = false;
     }
@@ -495,7 +519,7 @@ void showHelpScreen()
     }
     if (buttonPressed(button2))
     {
-      page = static_cast<uint8_t>((page + 1) % 5);
+      page = static_cast<uint8_t>((page + 1) % 6);
       LOG_DEBUG(F("help page"), page);
       redraw = true;
     }
@@ -1075,10 +1099,8 @@ void runTestStripMode()
   }
 
   lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Strip done      ");
-  lcd.setCursor(0, 1);
-  lcd.print(" Press Any Key. ");
+  lcd.printCenter("Strip done", 0);
+  lcd.printCenter("Press Any Key.", 1);
   beepDone();
   LOG_DEBUG(F("test strip mode complete"));
   waitForAnyButtonPress();
@@ -1209,7 +1231,7 @@ void runTimerCycle()
       }
       if (buttonDoublePressed(button3))
       {
-        if (confirmAction("End exposure?   "))
+        if (confirmAction("End exposure?"))
         {
           LOG_INFO(F("exposure cycle cancelled after stop"));
           lcd.clear();
@@ -1226,10 +1248,8 @@ void runTimerCycle()
   }
 
   lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("      DONE      ");
-  lcd.setCursor(0, 1);
-  lcd.print(" Press Any Key. ");
+  lcd.printCenter("DONE", 0);
+  lcd.printCenter("Press Any Key.", 1);
   beepDone();
   LOG_INFO(F("exposure cycle complete"));
   waitForAnyButtonPress();

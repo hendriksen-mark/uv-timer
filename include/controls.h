@@ -31,3 +31,6 @@ void runTimerCycle();
 // Confirmation dialog for critical actions, returns true if user confirms
 bool confirmAction(const char *message);
 
+// Full-brightness white-light inspection mode, exits on any button press
+void inspectionLight();
+

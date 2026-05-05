@@ -137,6 +137,13 @@ void loop()
     return;
   }
 
+  if (event2 == long_click)
+  {
+    LOG_DEBUG(F("inspection light requested"));
+    inspectionLight();
+    return;
+  }
+
   // ============================================================================
   // Button 3 gestures for time edit menu, help screen, and hidden menu
   // ============================================================================
