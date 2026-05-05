@@ -1,7 +1,5 @@
-#ifndef CONTROLS_H
-#define CONTROLS_H
-
 #pragma once
+
 
 // Turn off UV MOSFET outputs and turn ON white strip MOSFET
 void outputsIdle();
@@ -33,4 +31,3 @@ void runTimerCycle();
 // Confirmation dialog for critical actions, returns true if user confirms
 bool confirmAction(const char *message);
 
-#endif

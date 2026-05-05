@@ -1,7 +1,5 @@
-#ifndef LCD_H
-#define LCD_H
-
 #pragma once
+
 
 #include <stdint.h>
 
@@ -14,4 +12,3 @@ void showStartupMessage();
 // Draw the main start screen
 void drawStartScreen();
 
-#endif

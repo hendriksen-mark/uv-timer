@@ -1,7 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
-
 #pragma once
+
 
 // ============================================================================
 // PROJECT CONFIGURATION
@@ -74,4 +72,3 @@
 #define MAX_TICK_MS 1150
 #define TIMER_CALIBRATION_CENTER 128
 
-#endif // CONFIG_H

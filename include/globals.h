@@ -1,7 +1,5 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
-
 #pragma once
+
 
 #include <Arduino.h>
 #include <IskakINO_LiquidCrystal_I2C.h>
@@ -49,4 +47,3 @@ extern uint8_t stripStepSec;   // last-used test strip step seconds
 extern uint8_t buzzerMode;     // 0=off, 1=short, 2=double
 extern uint8_t debugLogLevel;  // 0=LVL_INFO, 1=LVL_DEBUG
 
-#endif // GLOBALS_H

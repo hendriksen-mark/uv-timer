@@ -1,7 +1,5 @@
-#ifndef BUTTONS_H
-#define BUTTONS_H
-
 #pragma once
+
 
 #include <Button2.h>
 
@@ -18,4 +16,3 @@ bool buttonLongPressed(Button2 &btn);
 bool buttonAnyGesture(Button2 &btn);
 bool waitForAnyButtonPress();
 
-#endif

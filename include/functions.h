@@ -1,7 +1,5 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
-
 #pragma once
+
 
 #include <NeoPixelBus.h>
 
@@ -21,4 +19,3 @@ void infoLedSuccess();
 void infoLedError();
 void blinkLed(uint8_t count, uint16_t interval = 200);
 
-#endif // FUNCTIONS_H

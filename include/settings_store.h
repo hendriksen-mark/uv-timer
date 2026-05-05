@@ -1,7 +1,5 @@
-#ifndef SETTINGS_STORE_H
-#define SETTINGS_STORE_H
-
 #pragma once
+
 
 // Load all settings from EEPROM (initializes if needed)
 void loadSettings();
@@ -12,4 +10,3 @@ void saveSettingsToJson();
 // factory reset: clear settings file and reload defaults
 void factoryResetSettings();
 
-#endif
