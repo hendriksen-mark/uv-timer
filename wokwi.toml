@@ -1,0 +1,13 @@
+[wokwi]
+version = 1
+firmware = '.pio/build/waveshare_rp2040_zero/firmware.uf2'
+elf = '.pio/build/waveshare_rp2040_zero/firmware.elf'
+rfc2217ServerPort = 4000
+
+[[chip]]
+name = 'pcf8574'  # To use the chip in diagram.json, add a part with "chip-pcf8574" type.
+binary = 'dist/pcf8574.chip.wasm'
+
+[[chip]]
+name = 'mosfet'  # To use the chip in diagram.json, add a part with "chip-mosfet" type.
+binary = 'dist/mosfet.chip.wasm'

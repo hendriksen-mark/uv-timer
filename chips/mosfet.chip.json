@@ -1,0 +1,10 @@
+{
+  "name": "mosfet",
+  "author": "Mark Hendriksen",
+  "pins": [
+    "SOURCE",
+    "DRAIN",
+    "GATE"
+  ],
+  "controls": []
+}
