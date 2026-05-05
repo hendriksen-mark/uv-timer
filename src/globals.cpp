@@ -3,7 +3,7 @@
 // ============================================================================
 // LCD INSTANCE
 // ============================================================================
-LiquidCrystal_I2C lcd(LCD_I2C_ADDR, LCD_COLS, LCD_ROWS);
+LiquidCrystal_I2C lcd(LCD_COLS, LCD_ROWS);
 
 // ============================================================================
 // TIMER STATE (Interrupt-driven exposure countdown)

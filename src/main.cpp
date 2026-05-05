@@ -17,8 +17,7 @@ void setup()
   // Initialize LCD before serial wait so boot status can be shown.
   Wire.setSDA(PIN_LCD_SDA);
   Wire.setSCL(PIN_LCD_SCL);
-  Wire.begin();
-  lcd.init();
+  lcd.begin();
   lcd.clear();
   writeBuzzer(false);
 

@@ -4,7 +4,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
+#include <IskakINO_LiquidCrystal_I2C.h>
 #include <Button2.h>
 #include "config.h"
 
