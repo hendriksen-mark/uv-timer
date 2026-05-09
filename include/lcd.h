@@ -11,4 +11,3 @@ void showStartupMessage();
 
 // Draw the main start screen
 void drawStartScreen();
-

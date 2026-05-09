@@ -15,4 +15,3 @@ bool buttonDoublePressed(Button2 &btn);
 bool buttonLongPressed(Button2 &btn);
 bool buttonAnyGesture(Button2 &btn);
 bool waitForAnyButtonPress();
-

@@ -27,7 +27,10 @@ void setup()
   lcd.clear();
   writeBuzzer(false);
 
-  serialWait();
+  if (serialWaitEnabled)
+  {
+    serialWait();
+  }
 
   initButtons();
 
@@ -93,25 +96,31 @@ void loop()
 
   if (event1 == double_click)
   {
-    LOG_DEBUG(F("reboot requested via double click"));
-    watchdog_reboot(0, 0, 10);
-    delay(25);
+    if (confirmAction("Reboot device?"))
+    {
+      LOG_DEBUG(F("reboot requested via double click"));
+      watchdog_reboot(0, 0, 10);
+      delay(25);
 
-    // On real hardware, execution should not continue past this point.
-    // In simulators where watchdog reset is not applied, recover with soft restart.
-    LOG_WARN(F("reboot not applied by platform, using soft restart"));
-    setup();
+      // On real hardware, execution should not continue past this point.
+      // In simulators where watchdog reset is not applied, recover with soft restart.
+      LOG_WARN(F("reboot not applied by platform, using soft restart"));
+      setup();
+    }
     return;
   }
 
   if (event1 == long_click)
   {
-    LOG_WARN(F("bootloader requested via long click"));
-    lcd.setCursor(0, 0);
-    lcd.print("Enter bootloader");
-    lcd.setCursor(0, 1);
-    lcd.print("mode and wait...     ");
-    rp2040.rebootToBootloader();
+    if (confirmAction("Enter bootloader?"))
+    {
+      LOG_WARN(F("bootloader requested via long click"));
+      lcd.setCursor(0, 0);
+      lcd.print("Enter bootloader");
+      lcd.setCursor(0, 1);
+      lcd.print("mode and wait...     ");
+      rp2040.rebootToBootloader();
+    }
     return;
   }
 

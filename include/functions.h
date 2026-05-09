@@ -18,4 +18,3 @@ void infoLedBusy();
 void infoLedSuccess();
 void infoLedError();
 void blinkLed(uint8_t count, uint16_t interval = 200);
-

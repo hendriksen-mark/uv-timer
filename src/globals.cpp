@@ -38,5 +38,6 @@ bool doubleSideEnabled = DEFAULT_DOUBLE_SIDE_ENABLED; // whether double-sided mo
 uint8_t stripStepCount = DEFAULT_TEST_STRIP_STEPS;    // last-used test strip step count
 uint8_t stripStepMin = DEFAULT_TEST_STRIP_MIN;        // last-used test strip step minutes
 uint8_t stripStepSec = DEFAULT_TEST_STRIP_SEC;        // last-used test strip step seconds
-uint8_t buzzerMode = DEFAULT_BUZZER_MODE;             // buzzer mode 0=off, 1=short, 2=double
+uint8_t buzzerMode = DEFAULT_BUZZER_MODE;             // buzzer mode 0=off, 1=short, 2=double, 3=alarm
 uint8_t debugLogLevel = DEFAULT_DEBUG_LEVEL;          // debug log level 0=LVL_INFO, 1=LVL_DEBUG
+bool serialWaitEnabled = DEFAULT_SERIAL_WAIT_ENABLED; // wait for serial connection at boot

@@ -9,4 +9,3 @@ void saveSettingsToJson();
 
 // factory reset: clear settings file and reload defaults
 void factoryResetSettings();
-

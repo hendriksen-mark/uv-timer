@@ -10,8 +10,9 @@ void outputsUvOnForMode();
 // Buzzer driver function to turn buzzer on or off based on active high setting
 void writeBuzzer(bool on);
 
-// Beep sequence to indicate timer complete
-void beepDone();
+// Beep sequence to indicate timer complete; returns true if a button press was
+// already consumed (alarm mode), so the caller can skip its own waitForAnyButtonPress().
+bool beepDone();
 
 // Hidden menu for calibration and settings
 void hiddenMenu();
@@ -33,4 +34,3 @@ bool confirmAction(const char *message);
 
 // Full-brightness white-light inspection mode, exits on any button press
 void inspectionLight();
-

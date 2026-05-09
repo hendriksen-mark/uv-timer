@@ -526,19 +526,35 @@ void showHelpScreen()
   }
 }
 
-void beepDone()
+bool beepDone()
 {
   if (buzzerMode == 1)
   {
     beepPulse(180);
   }
-  if (buzzerMode == 2)
+  else if (buzzerMode == 2)
   {
     beepPulse(200, 250);
     beepPulse(200);
   }
-  // buzzerMode == 0
+  else if (buzzerMode == 3)
+  {
+    // Alarm mode: repeat beep cycle until any button is pressed.
+    while (true)
+    {
+      beepPulse(200, 150);
+      beepPulse(200, 300);
+      serviceButtons();
+      if (button1.wasPressed() || button2.wasPressed() || button3.wasPressed())
+      {
+        break;
+      }
+    }
+    writeBuzzer(false);
+    return true; // button press already consumed
+  }
   writeBuzzer(false);
+  return false;
 }
 
 void hiddenMenu()
@@ -553,6 +569,7 @@ void hiddenMenu()
 
   uint8_t page = 0;
   bool redraw = true;
+  bool dirty = false;
 
   while (true)
   {
@@ -621,6 +638,12 @@ void hiddenMenu()
         lcd.setCursor(0, 1);
         lcd.print("-      +    Next");
         break;
+      case 10:
+        lcd.setCursor(0, 0);
+        lcd.print(F("Serial wait?    "));
+        lcd.setCursor(0, 1);
+        lcd.print(serialWaitEnabled ? ">Yes<  No   Next" : " Yes  >No<  Next");
+        break;
       default:
         lcd.setCursor(0, 0);
         lcd.print(F("Manual toggles  "));
@@ -656,6 +679,10 @@ void hiddenMenu()
       {
         mode = "Double";
       }
+      else if (buzzerMode == 3)
+      {
+        mode = "Alarm ";
+      }
       lcd.setCursor(10, 0);
       lcd.print(mode);
     }
@@ -687,14 +714,14 @@ void hiddenMenu()
       if (buttonPressed(button1))
       {
         skipStartup = true;
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("startup disabled"));
         redraw = true;
       }
       if (buttonPressed(button2))
       {
         skipStartup = false;
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("startup enabled"));
         redraw = true;
       }
@@ -712,7 +739,7 @@ void hiddenMenu()
         {
           --calByte;
         }
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("timing calibration decreased"), calByte);
       }
       if (buttonPressed(button2))
@@ -721,7 +748,7 @@ void hiddenMenu()
         {
           ++calByte;
         }
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("timing calibration increased"), calByte);
       }
       if (b3Event == single_click)
@@ -735,7 +762,7 @@ void hiddenMenu()
       if (buttonPressed(button1))
       {
         doubleSideEnabled = true;
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("double side enabled"));
         redraw = true;
       }
@@ -743,7 +770,7 @@ void hiddenMenu()
       {
         doubleSideEnabled = false;
         singleDouble = 0;
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("double side disabled"));
         redraw = true;
       }
@@ -758,14 +785,14 @@ void hiddenMenu()
       if (buttonPressed(button1))
       {
         topBottom = 1;
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("single side target set"), F("top"));
         redraw = true;
       }
       if (buttonPressed(button2))
       {
         topBottom = 0;
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("single side target set"), F("bottom"));
         redraw = true;
       }
@@ -780,7 +807,7 @@ void hiddenMenu()
       if (buttonPressed(button1))
       {
         uvActiveHigh = true;
-        saveSettingsToJson();
+        dirty = true;
         outputsIdle();
         LOG_DEBUG(F("uv polarity set"), F("active-high"));
         redraw = true;
@@ -788,7 +815,7 @@ void hiddenMenu()
       if (buttonPressed(button2))
       {
         uvActiveHigh = false;
-        saveSettingsToJson();
+        dirty = true;
         outputsIdle();
         LOG_DEBUG(F("uv polarity set"), F("active-low"));
         redraw = true;
@@ -804,7 +831,7 @@ void hiddenMenu()
       if (buttonPressed(button1))
       {
         whiteActiveHigh = true;
-        saveSettingsToJson();
+        dirty = true;
         outputsIdle();
         LOG_DEBUG(F("white polarity set"), F("active-high"));
         redraw = true;
@@ -812,7 +839,7 @@ void hiddenMenu()
       if (buttonPressed(button2))
       {
         whiteActiveHigh = false;
-        saveSettingsToJson();
+        dirty = true;
         outputsIdle();
         LOG_DEBUG(F("white polarity set"), F("active-low"));
         redraw = true;
@@ -831,7 +858,7 @@ void hiddenMenu()
         {
           --whitePwm;
         }
-        saveSettingsToJson();
+        dirty = true;
         writeWhite(true);
         LOG_DEBUG(F("white pwm decreased"), whitePwm);
       }
@@ -841,7 +868,7 @@ void hiddenMenu()
         {
           ++whitePwm;
         }
-        saveSettingsToJson();
+        dirty = true;
         writeWhite(true);
         LOG_DEBUG(F("white pwm increased"), whitePwm);
       }
@@ -855,14 +882,14 @@ void hiddenMenu()
     case 7:
       if (buttonPressed(button1))
       {
-        buzzerMode = static_cast<uint8_t>((buzzerMode + 2) % 3);
-        saveSettingsToJson();
+        buzzerMode = static_cast<uint8_t>((buzzerMode + 3) % 4);
+        dirty = true;
         LOG_DEBUG(F("buzzer mode changed"), buzzerMode);
       }
       if (buttonPressed(button2))
       {
-        buzzerMode = static_cast<uint8_t>((buzzerMode + 1) % 3);
-        saveSettingsToJson();
+        buzzerMode = static_cast<uint8_t>((buzzerMode + 1) % 4);
+        dirty = true;
         LOG_DEBUG(F("buzzer mode changed"), buzzerMode);
       }
       if (b3Event == single_click)
@@ -876,7 +903,7 @@ void hiddenMenu()
       if (buttonPressed(button1))
       {
         buzzerActiveHigh = true;
-        saveSettingsToJson();
+        dirty = true;
         writeBuzzer(false);
         LOG_DEBUG(F("buzzer polarity set"), F("active-high"));
         redraw = true;
@@ -884,7 +911,7 @@ void hiddenMenu()
       if (buttonPressed(button2))
       {
         buzzerActiveHigh = false;
-        saveSettingsToJson();
+        dirty = true;
         writeBuzzer(false);
         LOG_DEBUG(F("buzzer polarity set"), F("active-low"));
         redraw = true;
@@ -900,14 +927,36 @@ void hiddenMenu()
       if (buttonPressed(button1))
       {
         debugLogLevel = debugLogLevel == 0 ? 1 : 0;
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("debug level changed"), debugLogLevel ? F("DEBUG") : F("INFO"));
       }
       if (buttonPressed(button2))
       {
         debugLogLevel = debugLogLevel == 0 ? 1 : 0;
-        saveSettingsToJson();
+        dirty = true;
         LOG_DEBUG(F("debug level changed"), debugLogLevel ? F("DEBUG") : F("INFO"));
+      }
+      if (b3Event == single_click)
+      {
+        ++page;
+        redraw = true;
+      }
+      break;
+
+    case 10:
+      if (buttonPressed(button1))
+      {
+        serialWaitEnabled = true;
+        dirty = true;
+        LOG_DEBUG(F("serial wait enabled"));
+        redraw = true;
+      }
+      if (buttonPressed(button2))
+      {
+        serialWaitEnabled = false;
+        dirty = true;
+        LOG_DEBUG(F("serial wait disabled"));
+        redraw = true;
       }
       if (b3Event == single_click)
       {
@@ -924,8 +973,13 @@ void hiddenMenu()
       }
       if (b3Event == single_click)
       {
-        lcd.clear();
+        if (dirty)
+        {
+          saveSettingsToJson();
+        }
+        updateTickFromCalibration();
         LOG_SET_LEVEL(debugLogLevel == 0 ? DebugLogLevel::LVL_INFO : DebugLogLevel::LVL_DEBUG);
+        lcd.clear();
         LOG_INFO(F("hidden menu close"));
         return;
       }
@@ -1101,9 +1155,11 @@ void runTestStripMode()
   lcd.clear();
   lcd.printCenter("Strip done", 0);
   lcd.printCenter("Press Any Key.", 1);
-  beepDone();
+  if (!beepDone())
+  {
+    waitForAnyButtonPress();
+  }
   LOG_DEBUG(F("test strip mode complete"));
-  waitForAnyButtonPress();
   lcd.clear();
 }
 
@@ -1250,8 +1306,11 @@ void runTimerCycle()
   lcd.clear();
   lcd.printCenter("DONE", 0);
   lcd.printCenter("Press Any Key.", 1);
-  beepDone();
+  bool buttonConsumed = beepDone();
   LOG_INFO(F("exposure cycle complete"));
-  waitForAnyButtonPress();
+  if (!buttonConsumed)
+  {
+    waitForAnyButtonPress();
+  }
   lcd.clear();
 }

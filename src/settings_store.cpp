@@ -27,6 +27,7 @@ static void emitSettingsJson(const __FlashStringHelper *reason)
   doc["stripStepSec"] = stripStepSec;
   doc["buzzerMode"] = buzzerMode;
   doc["debugLogLevel"] = debugLogLevel;
+  doc["serialWaitEnabled"] = serialWaitEnabled;
 
   String out;
   serializeJson(doc, out);
@@ -106,6 +107,7 @@ static void loadSettingsFromJson(const char *json_str)
   stripStepSec = getU8("stripStepSec", DEFAULT_TEST_STRIP_SEC);
   buzzerMode = getU8("buzzerMode", DEFAULT_BUZZER_MODE);
   debugLogLevel = getU8("debugLogLevel", DEFAULT_DEBUG_LEVEL);
+  serialWaitEnabled = getBool("serialWaitEnabled", DEFAULT_SERIAL_WAIT_ENABLED);
 
   // Validate ranges
   if (timeSec > 59)
@@ -124,7 +126,7 @@ static void loadSettingsFromJson(const char *json_str)
   {
     stripStepSec = 59;
   }
-  if (buzzerMode > 2)
+  if (buzzerMode > 3)
   {
     buzzerMode = DEFAULT_BUZZER_MODE;
   }
@@ -155,6 +157,7 @@ void saveSettingsToJson()
   doc["stripStepSec"] = stripStepSec;
   doc["buzzerMode"] = buzzerMode;
   doc["debugLogLevel"] = debugLogLevel;
+  doc["serialWaitEnabled"] = serialWaitEnabled;
 
   File f = LittleFS.open(SETTINGS_FILE, "w");
   if (!f)
@@ -210,6 +213,7 @@ void loadSettings()
   stripStepSec = DEFAULT_TEST_STRIP_SEC;
   buzzerMode = DEFAULT_BUZZER_MODE;
   debugLogLevel = DEFAULT_DEBUG_LEVEL;
+  serialWaitEnabled = DEFAULT_SERIAL_WAIT_ENABLED;
   updateTickFromCalibration();
   saveSettingsToJson();
   emitSettingsJson(F("defaults"));

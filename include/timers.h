@@ -6,4 +6,3 @@ void updateTickFromCalibration();
 
 // Initialize 1ms timer ticker
 void setupTimer1();
-

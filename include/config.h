@@ -64,6 +64,7 @@
 #define DEFAULT_TEST_STRIP_SEC DEFAULT_TIME_SEC
 #define DEFAULT_BUZZER_MODE 2
 #define DEFAULT_DEBUG_LEVEL 1 // 0=LVL_INFO, 1=LVL_DEBUG
+#define DEFAULT_SERIAL_WAIT_ENABLED 1 // 1=wait for serial at boot, 0=skip
 
 // ============================================================================
 // TIMING CONSTRAINTS
@@ -71,4 +72,3 @@
 #define MIN_TICK_MS 850
 #define MAX_TICK_MS 1150
 #define TIMER_CALIBRATION_CENTER 128
-

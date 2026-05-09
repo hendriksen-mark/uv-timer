@@ -44,6 +44,6 @@ extern bool doubleSideEnabled; // whether double-sided mode is available
 extern uint8_t stripStepCount; // last-used test strip step count
 extern uint8_t stripStepMin;   // last-used test strip step minutes
 extern uint8_t stripStepSec;   // last-used test strip step seconds
-extern uint8_t buzzerMode;     // 0=off, 1=short, 2=double
+extern uint8_t buzzerMode;     // 0=off, 1=short, 2=double, 3=alarm
 extern uint8_t debugLogLevel;  // 0=LVL_INFO, 1=LVL_DEBUG
-
+extern bool serialWaitEnabled; // true=wait for serial at boot
