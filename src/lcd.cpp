@@ -11,17 +11,13 @@ void lcdPrintTime(uint8_t mm, uint8_t ss)
 void showStartupMessage()
 {
   lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("UV Exposure Syst");
-  lcd.setCursor(0, 1);
-  lcd.print("Waveshare RP2040");
+  lcd.printCenter("UV Exposure Syst", 0);
+  lcd.printCenter("Waveshare RP2040", 1);
   delay(2000);
 
   lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Original by     ");
-  lcd.setCursor(0, 1);
-  lcd.print("Stynus (PICBASIC)");
+  lcd.printCenter("Original by", 0);
+  lcd.printCenter("Stynus (PICBASIC)", 1);
   delay(2000);
   lcd.clear();
 }
