@@ -33,8 +33,6 @@ static unsigned long holdRepeat1 = 0;
 static unsigned long holdRepeat2 = 0;
 static unsigned long holdRepeat3 = 0;
 
-static constexpr unsigned long HOLD_REPEAT_MS = 150;
-
 static unsigned long &holdStartFor(Button2 &btn)
 {
   if (&btn == &button1)
@@ -136,7 +134,14 @@ bool buttonLongPressed(Button2 &btn)
     return true;
   }
 
-  if (holdReported && nowMs - holdRepeat >= HOLD_REPEAT_MS)
+  unsigned long repeatIntervalMs = APP_BTN_HOLD_REPEAT_MS;
+  unsigned long fastModeThresholdMs = static_cast<unsigned long>(btn.getLongClickTime()) + APP_BTN_HOLD_ACCEL_AFTER_MS;
+  if (holdReported && nowMs - holdStart >= fastModeThresholdMs)
+  {
+    repeatIntervalMs = APP_BTN_HOLD_REPEAT_FAST_MS;
+  }
+
+  if (holdReported && nowMs - holdRepeat >= repeatIntervalMs)
   {
     holdRepeat = nowMs;
     return true;

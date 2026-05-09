@@ -44,6 +44,9 @@
 #define APP_BTN_DEBOUNCE_MS   30
 #define APP_BTN_DOUBLE_MS     350
 #define APP_BTN_LONG_MS       700
+#define APP_BTN_HOLD_REPEAT_MS 150
+#define APP_BTN_HOLD_ACCEL_AFTER_MS 1000
+#define APP_BTN_HOLD_REPEAT_FAST_MS 90
 
 // ============================================================================
 // TIMING & CALIBRATION DEFAULTS
