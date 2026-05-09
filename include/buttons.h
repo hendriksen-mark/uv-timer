@@ -13,5 +13,6 @@ clickType buttonEvent(Button2 &btn);
 bool buttonPressed(Button2 &btn);
 bool buttonDoublePressed(Button2 &btn);
 bool buttonLongPressed(Button2 &btn);
-bool buttonAnyGesture(Button2 &btn);
+bool buttonWasPressedAndConsume(Button2 &btn);
+bool anyButtonPressedAndConsume();
 bool waitForAnyButtonPress();

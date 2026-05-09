@@ -56,6 +56,38 @@ static void beepPulse(uint16_t onMs, uint16_t offMs = 0)
   }
 }
 
+static bool delayInterruptibleByButton(uint16_t totalMs)
+{
+  unsigned long startMs = millis();
+  while (millis() - startMs < totalMs)
+  {
+    if (anyButtonPressedAndConsume())
+    {
+      return true;
+    }
+    delay(5);
+  }
+  return false;
+}
+
+static bool beepPulseInterruptible(uint16_t onMs, uint16_t offMs = 0)
+{
+  writeBuzzer(true);
+  if (delayInterruptibleByButton(onMs))
+  {
+    writeBuzzer(false);
+    return true;
+  }
+
+  writeBuzzer(false);
+  if (offMs > 0 && delayInterruptibleByButton(offMs))
+  {
+    return true;
+  }
+
+  return false;
+}
+
 static void beepStep()
 {
   if (buzzerMode == 1)
@@ -338,7 +370,7 @@ static bool editBlinkingTime(const char *title, uint8_t valueCol, uint8_t &mm, u
       }
 
       bool valueChanged = false;
-      if (buttonPressed(button1))
+      if (buttonPressed(button1) || buttonLongPressed(button1))
       {
         uint8_t prevMm = mm;
         uint8_t prevSs = ss;
@@ -362,7 +394,7 @@ static bool editBlinkingTime(const char *title, uint8_t valueCol, uint8_t &mm, u
         valueChanged = (mm != prevMm) || (ss != prevSs);
       }
 
-      if (buttonPressed(button2))
+      if (buttonPressed(button2) || buttonLongPressed(button2))
       {
         uint8_t prevMm = mm;
         uint8_t prevSs = ss;
@@ -542,10 +574,7 @@ bool beepDone()
     // Alarm mode: repeat beep cycle until any button is pressed.
     while (true)
     {
-      beepPulse(200, 150);
-      beepPulse(200, 300);
-      serviceButtons();
-      if (button1.wasPressed() || button2.wasPressed() || button3.wasPressed())
+      if (beepPulseInterruptible(200, 150) || beepPulseInterruptible(200, 300))
       {
         break;
       }
@@ -733,7 +762,7 @@ void hiddenMenu()
       break;
 
     case 1:
-      if (buttonPressed(button1))
+      if (buttonPressed(button1) || buttonLongPressed(button1))
       {
         if (calByte > 0)
         {
@@ -742,7 +771,7 @@ void hiddenMenu()
         dirty = true;
         LOG_DEBUG(F("timing calibration decreased"), calByte);
       }
-      if (buttonPressed(button2))
+      if (buttonPressed(button2) || buttonLongPressed(button2))
       {
         if (calByte < 255)
         {
@@ -852,7 +881,7 @@ void hiddenMenu()
       break;
 
     case 6:
-      if (buttonPressed(button1))
+      if (buttonPressed(button1) || buttonLongPressed(button1))
       {
         if (whitePwm > 0)
         {
@@ -862,7 +891,7 @@ void hiddenMenu()
         writeWhite(true);
         LOG_DEBUG(F("white pwm decreased"), whitePwm);
       }
-      if (buttonPressed(button2))
+      if (buttonPressed(button2) || buttonLongPressed(button2))
       {
         if (whitePwm < 255)
         {
@@ -1035,7 +1064,7 @@ void runTestStripMode()
       lcd.clear();
       return;
     }
-    if (buttonPressed(button1))
+    if (buttonPressed(button1) || buttonLongPressed(button1))
     {
       if (stepCount > 2)
       {
@@ -1044,7 +1073,7 @@ void runTestStripMode()
       }
       continue;
     }
-    if (buttonPressed(button2))
+    if (buttonPressed(button2) || buttonLongPressed(button2))
     {
       if (stepCount < 9)
       {

@@ -29,6 +29,11 @@ static unsigned long holdStart3 = 0;
 static bool holdReported1 = false;
 static bool holdReported2 = false;
 static bool holdReported3 = false;
+static unsigned long holdRepeat1 = 0;
+static unsigned long holdRepeat2 = 0;
+static unsigned long holdRepeat3 = 0;
+
+static constexpr unsigned long HOLD_REPEAT_MS = 150;
 
 static unsigned long &holdStartFor(Button2 &btn)
 {
@@ -56,11 +61,29 @@ static bool &holdReportedFor(Button2 &btn)
   return holdReported3;
 }
 
+static unsigned long &holdRepeatFor(Button2 &btn)
+{
+  if (&btn == &button1)
+  {
+    return holdRepeat1;
+  }
+  if (&btn == &button2)
+  {
+    return holdRepeat2;
+  }
+  return holdRepeat3;
+}
+
 void serviceButtons()
 {
   button1.loop();
   button2.loop();
   button3.loop();
+}
+
+static bool buttonEventMatches(Button2 &btn, clickType expected)
+{
+  return buttonEvent(btn) == expected;
 }
 
 clickType buttonEvent(Button2 &btn)
@@ -75,12 +98,12 @@ clickType buttonEvent(Button2 &btn)
 
 bool buttonPressed(Button2 &btn)
 {
-  return buttonEvent(btn) == single_click;
+  return buttonEventMatches(btn, single_click);
 }
 
 bool buttonDoublePressed(Button2 &btn)
 {
-  return buttonEvent(btn) == double_click;
+  return buttonEventMatches(btn, double_click);
 }
 
 bool buttonLongPressed(Button2 &btn)
@@ -89,11 +112,13 @@ bool buttonLongPressed(Button2 &btn)
 
   unsigned long &holdStart = holdStartFor(btn);
   bool &holdReported = holdReportedFor(btn);
+  unsigned long &holdRepeat = holdRepeatFor(btn);
 
   if (!btn.isPressed())
   {
     holdStart = 0;
     holdReported = false;
+    holdRepeat = 0;
     return false;
   }
 
@@ -107,15 +132,35 @@ bool buttonLongPressed(Button2 &btn)
   if (!holdReported && nowMs - holdStart >= btn.getLongClickTime())
   {
     holdReported = true;
+    holdRepeat = nowMs;
+    return true;
+  }
+
+  if (holdReported && nowMs - holdRepeat >= HOLD_REPEAT_MS)
+  {
+    holdRepeat = nowMs;
     return true;
   }
 
   return false;
 }
 
-bool buttonAnyGesture(Button2 &btn)
+bool buttonWasPressedAndConsume(Button2 &btn)
 {
-  return buttonEvent(btn) != empty;
+  serviceButtons();
+  if (!btn.wasPressed())
+  {
+    return false;
+  }
+  btn.read();
+  return true;
+}
+
+bool anyButtonPressedAndConsume()
+{
+  return buttonWasPressedAndConsume(button1) ||
+         buttonWasPressedAndConsume(button2) ||
+         buttonWasPressedAndConsume(button3);
 }
 
 bool waitForAnyButtonPress()
@@ -134,21 +179,8 @@ bool waitForAnyButtonPress()
 
   while (true)
   {
-    serviceButtons();
-
-    if (button1.wasPressed())
+    if (anyButtonPressedAndConsume())
     {
-      button1.read();
-      return true;
-    }
-    if (button2.wasPressed())
-    {
-      button2.read();
-      return true;
-    }
-    if (button3.wasPressed())
-    {
-      button3.read();
       return true;
     }
   }
